@@ -38,3 +38,7 @@ function processAnswer(id, answer) {
 function processCandidate(id, candidate) {
 
 };
+
+window.onunload = window.onbeforeunload = () => {
+    websocket.close();
+};
