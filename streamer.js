@@ -55,7 +55,21 @@ websocket.onmessage = e => {
 };
 
 function newSubscriber(id) {
+    const peerConnection = new RTCPeerConnection(RTCConfig);
+    peerConnections[id] = peerConnection;
 
+    //Set streaming
+    let stream = video.srcObject;
+    stream.getTracks().forEach(track => peerConnection.addTrack(track, stream));
+
+    //Candidate
+    peerConnection.onicecandidate = e => {
+        if (e.candidate) {
+            websocket.send("C\n" + id + "\n" + JSON.stringify(e.candidate));
+        };
+    };
+
+    
 };
 
 function processAnswer(id, answer) {
