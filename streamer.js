@@ -69,7 +69,21 @@ function newSubscriber(id) {
         };
     };
 
-    
+    //Create and send offer
+    peerConnection
+    .createOffer()
+    .then(sdp => peerConnection.setLocalDescription(sdp))
+    .then(() => {
+        websocket.send("O\n" + id + "\n" + JSON.stringify(peerConnection.localDescription));
+    });
+
+    peerConnection.onconnectionstatechange = () => {
+        console.log("Disconnecting peer");
+        if (peerConnection.iceConnectionState == 'disconnected') {
+            peerConnections[id].close();
+            delete peerConnections[id];
+        };
+    };
 };
 
 function processAnswer(id, answer) {
