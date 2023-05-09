@@ -87,11 +87,13 @@ function newSubscriber(id) {
 };
 
 function processAnswer(id, answer) {
-
+    if (id in peerConnections) {
+        peerConnections[id].setRemoteDescription(answer);
+    };
 };
 
 function processCandidate(id, candidate) {
-
+    peerConnections[id].addIceCandidate(new RTCIceCandidate(candidate));
 };
 
 window.onunload = window.onbeforeunload = () => {
